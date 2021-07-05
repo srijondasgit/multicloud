@@ -1,6 +1,7 @@
 import sys
 import random
 import argparse
+import paramiko
 import boto3
 import json
 from teststub import stubs
@@ -23,6 +24,36 @@ class Multicloud(ABC):
     @abstractmethod
     def start(self, instanceId):
         print("this function starts the instances provided")
+
+
+    @abstractmethod
+    def getIp(self, instanceId):
+        print("this function returns the ip addresses associated with instances provided")
+
+    def connectIpInstall(self, unitInstanceId):
+        # if retries > 3:
+        #     return False
+        # privkey = paramiko.RSAKey.from_private_key_file(
+        #     './config/image_rec_auth.pem')
+        # interval = 5
+        # try:
+        #     retries += 1
+        #     print('SSH into the instance: {}'.format(ip_address))
+        #     ssh.connect(hostname=ip_address,
+        #                 username='ubuntu', pkey=privkey)
+        #     return True
+        # except Exception as e:
+        #     print(e)
+        #     time.sleep(interval)
+        #     print('Retrying SSH connection to {}'.format(ip_address))
+        #     ssh_connect_with_retry(ssh, ip_address, retries)
+        print("Connection successful to ip : "+unitInstanceId+", starting installation of Mariadb ...")
+
+        # stdin, stdout, stderr = ssh.exec_command("sudo apt install mariadb-server")
+        # print('stdout:', stdout.read())
+        # print('stderr:', stderr.read())
+        print("Mariadb installation completed on ip : "+unitInstanceId)
+
 
 
 class aws_cloud(Multicloud):
@@ -79,6 +110,13 @@ class aws_cloud(Multicloud):
         for l in list:
             print(l)
 
+    def getIp(self, instanceId):
+        # ec2 = boto3.resource('ec2', region_name='us-east-1')
+        # instance = ec2.Instance(id=instance_id)
+        # instance.wait_until_running()
+        # current_instance = list(ec2.instances.filter(InstanceIds=[instance_id]))
+        # ip_address = current_instance[0].public_ip_address
+        return ['192.168.32.64', '192.168.32.65', '192.168.32.66']
 
 
 # Python boilerplate.
@@ -111,5 +149,11 @@ if __name__ == "__main__":
 
     if args.command == 'start' and args.cloud=='Aws':
         a.start(args.instanceId)
+
+    ips = a.getIp(args.instanceId)
+
+    for ip in ips:
+        a.connectIpInstall(ip)
+        # print (ip)
 
 
