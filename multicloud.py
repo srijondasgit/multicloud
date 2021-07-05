@@ -58,7 +58,7 @@ class Multicloud(ABC):
 
 class aws_cloud(Multicloud):
     def __init__(self):
-        self.imageId = "ami-1234567"
+        self.imageId = "ami-Ubuntu1234567"
         self.instanceType = "t2.small"
         self.securityGroup = ['sg-1f39854x', 'sg-1f39999x']
 
