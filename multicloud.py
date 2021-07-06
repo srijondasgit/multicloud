@@ -22,7 +22,7 @@ class Multicloud(ABC):
         print("This function provisions the instances")
 
     @abstractmethod
-    def start(self, instanceId):
+     def start(self, instanceId):
         print("this function starts the instances provided")
 
 
@@ -58,7 +58,7 @@ class Multicloud(ABC):
 
 class aws_cloud(Multicloud):
     def __init__(self):
-        self.imageId = "ami-Ubuntu1234567"
+        self.imageId = "ami-1234567"
         self.instanceType = "t2.small"
         self.securityGroup = ['sg-1f39854x', 'sg-1f39999x']
 
@@ -116,7 +116,9 @@ class aws_cloud(Multicloud):
         # instance.wait_until_running()
         # current_instance = list(ec2.instances.filter(InstanceIds=[instance_id]))
         # ip_address = current_instance[0].public_ip_address
-        return ['192.168.32.64', '192.168.32.65', '192.168.32.66']
+        stub = stubs()
+        ip_address = stub.aws_getIpstub()
+        return ip_address
 
 
 # Python boilerplate.
@@ -150,10 +152,7 @@ if __name__ == "__main__":
     if args.command == 'start' and args.cloud=='Aws':
         a.start(args.instanceId)
 
-    ips = a.getIp(args.instanceId)
-
-    for ip in ips:
-        a.connectIpInstall(ip)
-        # print (ip)
-
-
+    if args.command == 'installmariadb' and args.cloud == 'Aws':
+        ips = a.getIp(args.instanceId)
+        for ip in ips:
+            a.connectIpInstall(ip)
